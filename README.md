@@ -1,1 +1,1 @@
-# AzureSentinel
+# Azure Sentinel
