@@ -1,0 +1,209 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "87d8d6ec-8b29-40c9-a6a9-8a6d14379152",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 604800000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "resourceType": "microsoft.insights/components"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n## Teams and External Collaboration\r\n---"
+      },
+      "name": "text - 12 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let CallerOrg = (Teams_CL\r\n| extend InternalOrg = tostring(split(UserId, \"@\")[1])\r\n| distinct InternalOrg);\r\nlet data = (Teams_CL\r\n| extend UPN = tostring(parse_json(Members)[0].UPN) \r\n| extend Organization = tostring(split(UPN, \"@\")[1]) \r\n| where isnotempty(Organization)\r\n| summarize Calls = count() by ExtDomain = Organization, Request = UserId, Dependency = UPN\r\n| where ExtDomain !in (CallerOrg)\r\n| extend RequestId = strcat(ExtDomain, '::', Request)\r\n//| summarize Count=count() by Organization\r\n//| sort by Count desc\r\n); \r\nlet links = data\r\n| summarize Calls = sum(Calls) by ExtDomain, RequestId\r\n| project SourceId = ExtDomain, TargetId = RequestId, Calls, Kind = 'ExtDomain -> Request';\r\nlet nodes = data\r\n| summarize Calls = sum(Calls) by ExtDomain\r\n| project Id = ExtDomain, Name = ExtDomain, Calls, Kind = 'ExtDomain'\r\n| union (data\r\n    | summarize Calls = sum(Calls) by RequestId, Request\r\n    | project Id = RequestId, Name = Request, Calls, Kind = 'Request');\r\nnodes\r\n| union (links)\r\n| extend HEXColour = iif(Kind == \"Request\", \"cad8e6\", \"28496b\")\r\n",
+        "size": 3,
+        "title": "External Collaboration via Teams",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "Organization",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "Name",
+            "formatter": 1,
+            "formatOptions": {}
+          },
+          "centerContent": {
+            "columnMatch": "Calls",
+            "formatter": 12,
+            "formatOptions": {},
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "style": "decimal",
+                "maximumFractionDigits": 2,
+                "maximumSignificantDigits": 3
+              }
+            }
+          },
+          "bottomContent": {
+            "columnMatch": "Kind",
+            "formatOptions": {}
+          },
+          "nodeIdField": "Id",
+          "sourceIdField": "SourceId",
+          "targetIdField": "TargetId",
+          "edgeSize": "Calls",
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": {
+            "nodeColorField": "HEXColour",
+            "type": 2,
+            "emptyValueColor": "gray"
+          },
+          "groupByField": "Organization",
+          "hivesMargin": 5
+        }
+      },
+      "customWidth": "80",
+      "name": "query - 27 - Copy - Copy"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "\r\n## How to interpret the Teams Collaboration Graph\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Central nodes**<br>\r\nRepresents unique external domains that are collaborating with your enterprise</span>\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Surrounding nodes**<br>\r\nRepresents unique internal users that are collaborating with the external domain</span>\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Size of edge**<br>\r\nRepresents the frequency of interaction between the internal user and the external domain (thicker line = more frequent interactions)</span>"
+            },
+            "name": "text - 23"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "<br>\r\n<br>\r\n<br>\r\n\r\n\r\n## 💡 Suggestions\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Anomalous clusters**<br>\r\nIdentify small / individual clusters which suggest limited enterprise-wide interactions </span>\r\n"
+                  },
+                  "name": "text - 23"
+                }
+              ]
+            },
+            "name": "group - teams - Copy"
+          }
+        ]
+      },
+      "customWidth": "20",
+      "name": "group - teams"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "**Guide**\r\n\r\n💡 Enabling Teams logging: [link](https://techcommunity.microsoft.com/t5/azure-sentinel/protecting-your-teams-with-azure-sentinel/ba-p/1265761)"
+      },
+      "name": "text - 10 - Copy - Copy - Copy",
+      "styleSettings": {
+        "showBorder": true
+      }
+    }
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
