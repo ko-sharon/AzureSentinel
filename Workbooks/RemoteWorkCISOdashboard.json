@@ -1,0 +1,1129 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "87d8d6ec-8b29-40c9-a6a9-8a6d14379152",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 604800000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "resourceType": "microsoft.insights/components"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n## Threat Summary\r\n---"
+      },
+      "name": "text - 9"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": ""
+      },
+      "customWidth": "2.5",
+      "name": "text - 20 - Copy"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let covidIPs = externaldata (IPAddress: string) [h\"http://managedsentinel.com/downloads/covid19_ipaddresses.txt\"] with (ignoreFirstRecord=false);\r\nSigninLogs\r\n| where IPAddress in~ (covidIPs)\r\n| project TimeGenerated , UserPrincipalName , IPAddress , ResultDescription , AppDisplayName , Location\r\n| extend AccountCustomEntity = UserPrincipalName\r\n| extend IPCustomEntity = IPAddress\r\n| summarize Count=count() by bin(TimeGenerated,1h), IPAddress",
+              "size": 1,
+              "title": "Signins from Malicious IPs",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "164.132.116.247",
+                    "color": "red"
+                  },
+                  {
+                    "seriesName": "103.142.24.39",
+                    "color": "redDark"
+                  },
+                  {
+                    "seriesName": "103.57.211.14",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "104.154.60.82",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "104.18.49.185",
+                    "color": "purple"
+                  }
+                ],
+                "xSettings": {},
+                "ySettings": {}
+              }
+            },
+            "name": "query - 26"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let covidIPs = externaldata (IPAddress: string) [h\"http://managedsentinel.com/downloads/covid19_ipaddresses.txt\"] with (ignoreFirstRecord=false);\r\nSigninLogs\r\n| where IPAddress in~ (covidIPs)\r\n| project TimeGenerated , UserPrincipalName , IPAddress , ResultDescription , AppDisplayName , Location\r\n| extend AccountCustomEntity = UserPrincipalName\r\n| extend IPCustomEntity = IPAddress\r\n| summarize Count=count() by IPAddress\r\n| sort by Count desc",
+              "size": 1,
+              "title": "Signins from Malicious IPs",
+              "noDataMessage": "No Security Incidents",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "exportFieldName": "UserName",
+              "exportParameterName": "UserNameFilter",
+              "exportDefaultValue": "All",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Count",
+                    "formatter": 3,
+                    "formatOptions": {
+                      "palette": "red"
+                    }
+                  },
+                  {
+                    "columnMatch": "UserName",
+                    "formatter": 1,
+                    "formatOptions": {}
+                  },
+                  {
+                    "columnMatch": "TrafficUpload",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "blue"
+                    }
+                  },
+                  {
+                    "columnMatch": "TrafficDownload",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "purple"
+                    }
+                  }
+                ],
+                "filter": true
+              }
+            },
+            "name": "query - 1 - Copy"
+          }
+        ]
+      },
+      "customWidth": "40",
+      "name": "group - 23",
+      "styleSettings": {
+        "padding": "10",
+        "showBorder": true
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": ""
+      },
+      "customWidth": "5",
+      "name": "text - 20"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let covidIPs = externaldata (IPAddress: string) [h\"http://managedsentinel.com/downloads/covid19_domains.txt\"] with (ignoreFirstRecord=false);\r\nTeamsData\r\n| extend UPN = tostring(parse_json(Members)[0].UPN) \r\n| extend Organization = tostring(split(UPN, \"@\")[1]) \r\n| where isnotempty(Organization)\r\n| where Organization in (covidIPs)\r\n| summarize count() by Organization, bin(TimeGenerated,1h)\r\n",
+              "size": 1,
+              "title": "Interactions with Malicious Domains",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "againstcovid-19.com",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "chase7-covid.com",
+                    "color": "red"
+                  }
+                ],
+                "xSettings": {},
+                "ySettings": {}
+              }
+            },
+            "name": "query - 26 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let covidIPs = externaldata (IPAddress: string) [h\"http://managedsentinel.com/downloads/covid19_domains.txt\"] with (ignoreFirstRecord=false);\r\nTeamsData\r\n| extend UPN = tostring(parse_json(Members)[0].UPN) \r\n| extend Organization = tostring(split(UPN, \"@\")[1]) \r\n| where isnotempty(Organization)\r\n| where Organization in (covidIPs)\r\n| summarize Count=count() by Organization\r\n",
+              "size": 1,
+              "title": "Interactions with Malicious Domains",
+              "noDataMessage": "No Security Incidents",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "exportFieldName": "UserName",
+              "exportParameterName": "UserNameFilter",
+              "exportDefaultValue": "All",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Count",
+                    "formatter": 3,
+                    "formatOptions": {
+                      "palette": "red"
+                    }
+                  },
+                  {
+                    "columnMatch": "UserName",
+                    "formatter": 1,
+                    "formatOptions": {}
+                  },
+                  {
+                    "columnMatch": "TrafficUpload",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "blue"
+                    }
+                  },
+                  {
+                    "columnMatch": "TrafficDownload",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "purple"
+                    }
+                  }
+                ],
+                "filter": true
+              }
+            },
+            "name": "query - 1 - Copy - Copy"
+          }
+        ]
+      },
+      "customWidth": "40",
+      "name": "group - 24",
+      "styleSettings": {
+        "showBorder": true
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": ""
+      },
+      "customWidth": "2.5",
+      "name": "text - 20 - Copy - Copy"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "**Guide**\r\n\r\n💡 COVID-19 Threat Intelligence and IOCs courtesy of Managed Sentinel: [link](https://www.managedsentinel.com/2020/03/27/azure-sentinel-covid-19-alerts-and-iocs/)\r\n\r\n💡 Hunt for COVID-19 themed threats: [link](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/Guided%20Hunting%20-%20Covid-19%20Themed%20Threats.ipynb)\r\n"
+      },
+      "name": "text - 10 - Copy - Copy - Copy",
+      "styleSettings": {
+        "showBorder": true
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n## Identity and Authentication\r\n---"
+      },
+      "name": "text - 12 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n| where UserDisplayName !=\"On-Premises Directory Synchronization Service Account\"\r\n| extend city_  = tostring(LocationDetails.city) \r\n| extend state_ = tostring(LocationDetails.state) \r\n| extend countryOrRegion_ = tostring(LocationDetails.countryOrRegion) \r\n| extend latitude_  = tostring(parse_json(tostring(LocationDetails.geoCoordinates)).latitude) \r\n| extend longitude_ = tostring(parse_json(tostring(LocationDetails.geoCoordinates)).longitude) \r\n| extend countrycity_ = strcat(countryOrRegion_, \" - \", city_)\r\n| order by TimeGenerated asc , city_ asc\r\n| summarize count() by bin(TimeGenerated, 24h),\r\n                       latitude_,\r\n                       longitude_, countrycity_\r\n",
+        "size": 3,
+        "title": "All Signins by Location",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "map",
+        "mapSettings": {
+          "locInfo": "LatLong",
+          "latitude": "latitude_",
+          "longitude": "longitude_",
+          "sizeSettings": "count_",
+          "sizeAggregation": "Sum",
+          "labelSettings": "countrycity_",
+          "legendMetric": "count_",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "count_",
+            "colorAggregation": "Sum",
+            "type": "heatmap",
+            "heatmapPalette": "yellowOrangeRed"
+          }
+        }
+      },
+      "customWidth": "60",
+      "name": "query - 33"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let starttime = 30d;\r\nlet endtime = 1d;\r\nlet countThreshold = 1;\r\nSigninLogs\r\n//| where TimeGenerated >= ago(endtime)\r\n| summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated), perIdentityAuthCount = count() \r\nby Identity, locationString = strcat(tostring(LocationDetails[\"countryOrRegion\"]), \"/\", tostring(LocationDetails[\"state\"]), \"/\", \r\ntostring(LocationDetails[\"city\"]), \";\" , tostring(LocationDetails[\"geoCoordinates\"])), country=tostring(LocationDetails[\"countryOrRegion\"]), st=tostring(LocationDetails[\"state\"])\r\n| summarize StartTimeUtc = min(StartTimeUtc), EndTimeUtc = max(EndTimeUtc), distinctAccountCount = count(), identityList=makeset(Identity) by locationString, country, st\r\n| extend identityList = iff(distinctAccountCount<10, identityList, \"multiple (>10)\")\r\n| join kind= anti (\r\nSigninLogs\r\n  | where TimeGenerated <= ago(1d)\r\n  | project locationString= strcat(tostring(LocationDetails[\"countryOrRegion\"]), \"/\", tostring(LocationDetails[\"state\"]), \"/\", \r\n  tostring(LocationDetails[\"city\"]), \";\" , tostring(LocationDetails[\"geoCoordinates\"])), country=tostring(LocationDetails[\"countryOrRegion\"]), st=tostring(LocationDetails[\"state\"])\r\n  | summarize priorCount = count() by locationString, country, st\r\n) \r\non locationString\r\n| project NewLocation=strcat(country, \" - \", st), identityList, identityCount = distinctAccountCount",
+              "size": 3,
+              "title": "Signins from New Locations",
+              "noDataMessage": "No Sign-ins from New Locations",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table"
+            },
+            "name": "query - 8"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n| where UserDisplayName !=\"On-Premises Directory Synchronization Service Account\"\r\n| extend city_  = tostring(LocationDetails.city) \r\n| extend state_ = tostring(LocationDetails.state) \r\n| extend countryOrRegion_ = tostring(LocationDetails.countryOrRegion) \r\n| extend latitude_  = tostring(parse_json(tostring(LocationDetails.geoCoordinates)).latitude) \r\n| extend longitude_ = tostring(parse_json(tostring(LocationDetails.geoCoordinates)).longitude) \r\n| extend countrycity_ = strcat(countryOrRegion_, \" - \", city_)\r\n| order by TimeGenerated asc , city_ asc\r\n| summarize count() by bin(TimeGenerated, 24h),\r\n                       latitude_,\r\n                       longitude_, countrycity_\r\n| order by count_ asc\r\n| take 10\r\n",
+              "size": 0,
+              "title": "Signins from Least Seen Locations",
+              "noDataMessage": "No Sign-ins from New Locations",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "map",
+              "mapSettings": {
+                "locInfo": "LatLong",
+                "latitude": "latitude_",
+                "longitude": "longitude_",
+                "sizeSettings": "count_",
+                "sizeAggregation": "Sum",
+                "labelSettings": "countrycity_",
+                "legendMetric": "count_",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "count_",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "redBright"
+                }
+              }
+            },
+            "name": "query - 8 - Copy"
+          }
+        ]
+      },
+      "customWidth": "40",
+      "name": "group - 29",
+      "styleSettings": {
+        "showBorder": true
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n## Device Summary\r\n---"
+      },
+      "name": "text - 12 - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs \r\n| where OperationName == \"Enrollment\" and Result == \"Success\"\r\n| summarize NewDevices=count() by bin(TimeGenerated,1h)",
+        "size": 1,
+        "title": "New Devices Enrolled",
+        "color": "gray",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "FlowCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "AllowedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "DeniedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer Count",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Trend",
+              "formatter": 9,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Id",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "ParentId",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        },
+        "mapSettings": {
+          "locInfo": "LatLong",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "sizeSettings": "FlowCount",
+          "sizeAggregation": "Sum",
+          "labelSettings": "Country",
+          "legendMetric": "FlowCount",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "FlowCount",
+            "colorAggregation": "Sum",
+            "type": "heatmap",
+            "heatmapPalette": "coldHot"
+          }
+        }
+      },
+      "customWidth": "70",
+      "name": "query - 7"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let latestbatch = IntuneDeviceComplianceOrg\r\n| sort by TimeGenerated desc\r\n| take 1\r\n| project BatchId;\r\nIntuneDeviceComplianceOrg\r\n| where BatchId in (latestbatch)\r\n| where isnotempty(DeviceId)\r\n| extend Status = iif(ComplianceState ==1, \"Compliant\", iif(ComplianceState ==2, \"Not Compliant\", iif(ComplianceState == 0, \"Unknown\", \"Error/Transition\")))\r\n| summarize count() by Status\r\n//unknown\t0\tUnknown.\r\n//compliant\t1\tCompliant.\r\n//noncompliant\t2\tDevice is non-compliant and is blocked from corporate resources.\r\n//conflict\t3\tConflict with other rules.\r\n//error\t4\tError.\r\n//inGracePeriod\t254\tDevice is non-compliant but still has access to corporate resources\r\n//configManager\t255\tManaged by Config Manager\r\n//https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-compliancestate?view=graph-rest-1.0",
+        "size": 4,
+        "title": "Device Compliance",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart",
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "Status",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "count_",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "Not Compliant",
+              "color": "red"
+            },
+            {
+              "seriesName": "Compliant",
+              "color": "blue"
+            }
+          ],
+          "ySettings": {}
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 27"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs \r\n| where OperationName == \"Enrollment\" and Result == \"Success\"\r\n| extend OS = tostring(Properties.Os) \r\n| extend OSVersion = tostring(Properties.OsVersion)\r\n| summarize Count=count() by OS, OSVersion ",
+        "size": 0,
+        "title": "New Devices Enrolled - OS Distribution",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "FlowCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "AllowedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "DeniedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer Count",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Trend",
+              "formatter": 9,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Id",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "ParentId",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        },
+        "graphSettings": {
+          "type": 2,
+          "topContent": {
+            "columnMatch": "OSVersion",
+            "formatOptions": {}
+          },
+          "centerContent": {
+            "columnMatch": "Count",
+            "formatOptions": {},
+            "numberFormat": {
+              "unit": 0,
+              "options": {
+                "style": "decimal"
+              }
+            }
+          },
+          "hivesContent": {
+            "columnMatch": "OS",
+            "formatter": 1,
+            "formatOptions": {},
+            "numberFormat": {
+              "unit": 0,
+              "options": {
+                "style": "decimal"
+              }
+            }
+          },
+          "nodeIdField": "OSVersion",
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": {
+            "nodeColorField": "OS",
+            "type": 1,
+            "colorPalette": "default"
+          },
+          "groupByField": "OS",
+          "hivesMargin": 5
+        }
+      },
+      "customWidth": "45",
+      "name": "query - 8"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs \r\n| where OperationName == \"Enrollment\" and Result != \"Success\"\r\n| summarize FailedDevices=count() by bin(TimeGenerated,1h)",
+        "size": 0,
+        "title": "Failed Device Enrollment",
+        "color": "red",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "categoricalbar",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "FlowCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "AllowedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "DeniedInFlows",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "red",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer Count",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Trend",
+              "formatter": 9,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Computer",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Id",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Domain1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "TotalCount1",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "ParentId",
+              "formatter": 5,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        },
+        "mapSettings": {
+          "locInfo": "LatLong",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "sizeSettings": "FlowCount",
+          "sizeAggregation": "Sum",
+          "labelSettings": "Country",
+          "legendMetric": "FlowCount",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "FlowCount",
+            "colorAggregation": "Sum",
+            "type": "heatmap",
+            "heatmapPalette": "coldHot"
+          }
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 31"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs \r\n| where OperationName == \"Enrollment\" and Result == \"Success\"\r\n| extend FailureCategory = tostring(Properties.FailureCategory) \r\n| extend FailureReason = tostring(Properties.FailureReason) \r\n| summarize Count=count() by FailureCategory, FailureReason",
+        "size": 0,
+        "title": "Failed Device Enrollment - Reasons",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "30",
+      "name": "query - 10"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "**Guide**\r\n\r\n💡 Enabling Intune logging: [link](https://docs.microsoft.com/en-us/mem/intune/fundamentals/review-logs-using-azure-monitor#send-logs-to-azure-monitor)"
+      },
+      "name": "text - 10 - Copy - Copy",
+      "styleSettings": {
+        "showBorder": true
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n## Data and Collaboration\r\n---"
+      },
+      "name": "text - 12 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "OfficeActivity\r\n| summarize Count= count() by OfficeWorkload, bin(TimeGenerated, 1h)",
+        "size": 0,
+        "title": "Office Activity Usage by Workload",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "areachart"
+      },
+      "customWidth": "65",
+      "name": "query - 21"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let data = OfficeActivity;\r\nlet appData = data\r\n| summarize TotalCount = count() by SourceFileExtension\r\n//, Operation\r\n| join kind=inner (data\r\n    | make-series Trend = count() default = 0 on TimeGenerated in range({TimeRange:start}, {TimeRange:end}, {TimeRange:grain}) by SourceFileExtension\r\n    | project-away TimeGenerated) on SourceFileExtension\r\n| order by SourceFileExtension asc\r\n| project SourceFileExtension, TotalCount, Trend\r\n//, Operation\r\n| serialize Id = row_number();\r\ndata\r\n| summarize TotalCount = count() by SourceFileExtension\r\n//initiator = iif (tostring(InitiatedBy.user.userPrincipalName) != \"\", tostring(InitiatedBy.user.userPrincipalName), \"unknown\"), SourceFileExtension\r\n| join kind=inner (data\r\n    | make-series Trend = count() default = 0 on TimeGenerated in range({TimeRange:start}, {TimeRange:end}, {TimeRange:grain}) by SourceFileExtension\r\n    //, initiator = iif (tostring(InitiatedBy.user.userPrincipalName) != \"\", tostring(InitiatedBy.user.userPrincipalName), \"unknown\")\r\n    | project-away TimeGenerated) on SourceFileExtension\r\n    //, initiator\r\n| order by TotalCount desc, SourceFileExtension asc\r\n| project SourceFileExtension, TotalCount, Trend\r\n| serialize Id = row_number(1000000)\r\n//| join kind=inner (appData) on SourceFileExtension\r\n| extend FileExt = iif(isnotempty(SourceFileExtension), SourceFileExtension, \"others\")\r\n| project FileExt, ['Operations Count'] = TotalCount, Trend\r\n//, ParentId = Id\r\n//| union (appData \r\n//    | project Id, Name = SourceFileExtension, Type = 'Operation', ['Operations Count'] = TotalCount, Trend)\r\n| order by ['Operations Count'] desc, FileExt asc\r\n",
+        "size": 3,
+        "title": "Top 10 File Extensions",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "exportFieldName": "",
+        "exportParameterName": "SourceFileExtension",
+        "exportDefaultValue": "{ \"SourceFileExtension\":\"*\" }",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Operations Count",
+              "formatter": 8,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Trend",
+              "formatter": 9,
+              "formatOptions": {
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Name",
+              "formatter": 1,
+              "formatOptions": {
+                "linkColumn": "Name",
+                "linkTarget": "CellDetails",
+                "linkIsContextBlade": true,
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 10,
+          "hierarchySettings": {
+            "idColumn": "Operations Count",
+            "parentColumn": "SourceFileExtension",
+            "treeType": 0,
+            "expanderColumn": "SourceFileExtension",
+            "expandTopLevel": false
+          }
+        },
+        "sortBy": []
+      },
+      "customWidth": "35",
+      "name": "query - 10"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let CallerOrg = (TeamsData\r\n| extend InternalOrg = tostring(split(UserId, \"@\")[1])\r\n| distinct InternalOrg);\r\nlet data = (TeamsData\r\n| extend UPN = tostring(parse_json(Members)[0].UPN) \r\n| extend Organization = tostring(split(UPN, \"@\")[1]) \r\n| where isnotempty(Organization)\r\n| summarize Calls = count() by ExtDomain = Organization, Request = UserId, Dependency = UPN\r\n| where ExtDomain !in (CallerOrg)\r\n| extend RequestId = strcat(ExtDomain, '::', Request)\r\n//| summarize Count=count() by Organization\r\n//| sort by Count desc\r\n); \r\nlet links = data\r\n| summarize Calls = sum(Calls) by ExtDomain, RequestId\r\n| project SourceId = ExtDomain, TargetId = RequestId, Calls, Kind = 'ExtDomain -> Request';\r\nlet nodes = data\r\n| summarize Calls = sum(Calls) by ExtDomain\r\n| project Id = ExtDomain, Name = ExtDomain, Calls, Kind = 'ExtDomain'\r\n| union (data\r\n    | summarize Calls = sum(Calls) by RequestId, Request\r\n    | project Id = RequestId, Name = Request, Calls, Kind = 'Request');\r\nnodes\r\n| union (links)\r\n| extend HEXColour = iif(Kind == \"Request\", \"D8D9DE\", \"C06C84\")\r\n",
+        "size": 3,
+        "title": "External Collaboration via Teams",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "Organization",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "Name",
+            "formatter": 1,
+            "formatOptions": {}
+          },
+          "centerContent": {
+            "columnMatch": "Calls",
+            "formatter": 12,
+            "formatOptions": {},
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "style": "decimal",
+                "maximumFractionDigits": 2,
+                "maximumSignificantDigits": 3
+              }
+            }
+          },
+          "bottomContent": {
+            "columnMatch": "Kind",
+            "formatOptions": {}
+          },
+          "nodeIdField": "Id",
+          "sourceIdField": "SourceId",
+          "targetIdField": "TargetId",
+          "edgeSize": "Calls",
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": {
+            "nodeColorField": "HEXColour",
+            "type": 2,
+            "emptyValueColor": "yellow"
+          },
+          "groupByField": "Organization",
+          "hivesMargin": 5
+        }
+      },
+      "customWidth": "80",
+      "name": "query - 27 - Copy - Copy"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "\r\n## How to interpret the Teams Collaboration Graph\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Central nodes**<br>\r\nRepresents unique external domains that are collaborating with your enterprise</span>\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Surrounding nodes**<br>\r\nRepresents unique internal users that are collaborating with the external domain</span>\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Size of edge**<br>\r\nRepresents the frequency of interaction between the internal user and the external domain (thicker line = more frequent interactions)</span>"
+            },
+            "name": "text - 23"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "<br>\r\n<br>\r\n<br>\r\n\r\n\r\n## 💡 Suggestions\r\n\r\n----\r\n\r\n<span style=\"font-size:1.5em;\">**Anomalous clusters**<br>\r\nIdentify small / individual clusters which suggest limited enterprise-wide interactions </span>\r\n"
+                  },
+                  "name": "text - 23"
+                }
+              ]
+            },
+            "name": "group - teams - Copy"
+          }
+        ]
+      },
+      "customWidth": "20",
+      "name": "group - teams"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "**Guide**\r\n\r\n💡 Enabling Teams logging: [link](https://techcommunity.microsoft.com/t5/azure-sentinel/protecting-your-teams-with-azure-sentinel/ba-p/1265761)"
+      },
+      "name": "text - 10 - Copy - Copy - Copy",
+      "styleSettings": {
+        "showBorder": true
+      }
+    }
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
+
