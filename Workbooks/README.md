@@ -5,5 +5,5 @@
 ---
 ## Workbooks available
 
-# TeamsExternalCollabGraph
+### TeamsExternalCollabGraph
 ![TeamsExternalCollabGraph](https://github.com/ko-sharon/AzureSentinel/blob/master/Supporting/Workbooks_TeamsExternalCollabGraph.gif)
